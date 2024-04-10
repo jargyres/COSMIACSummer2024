@@ -810,7 +810,7 @@ class BladeRF:
 
     # Trigger TBD
 
-    def printfromc(self):
+    def printfromC(self):
         ret = libbladeRF.printfromC()
         _check_error(ret)
         
