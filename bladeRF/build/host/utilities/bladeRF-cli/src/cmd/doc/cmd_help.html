@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>bladeRF-cli commands</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">bladeRF-cli commands</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#calibrate">calibrate</a></li>
+<li><a href="#clear">clear</a></li>
+<li><a href="#echo">echo</a></li>
+<li><a href="#erase">erase</a></li>
+<li><a href="#flash_backup">flash_backup</a></li>
+<li><a href="#flash_image">flash_image</a></li>
+<li><a href="#flash_init_cal">flash_init_cal</a></li>
+<li><a href="#flash_restore">flash_restore</a></li>
+<li><a href="#fw_log">fw_log</a></li>
+<li><a href="#generate">generate</a></li>
+<li><a href="#help">help</a></li>
+<li><a href="#info">info</a></li>
+<li><a href="#help-1">help</a></li>
+<li><a href="#info-1">info</a></li>
+<li><a href="#jump_to_boot">jump_to_boot</a></li>
+<li><a href="#load">load</a></li>
+<li><a href="#xb">xb</a></li>
+<li><a href="#mimo">mimo</a></li>
+<li><a href="#open">open</a></li>
+<li><a href="#peek">peek</a></li>
+<li><a href="#poke">poke</a></li>
+<li><a href="#print">print</a></li>
+<li><a href="#probe">probe</a></li>
+<li><a href="#quit">quit</a></li>
+<li><a href="#recover">recover</a></li>
+<li><a href="#run">run</a></li>
+<li><a href="#rx">rx</a></li>
+<li><a href="#trigger">trigger</a></li>
+<li><a href="#tx">tx</a></li>
+<li><a href="#set">set</a></li>
+<li><a href="#version">version</a></li>
+</ul>
+</nav>
+<p>[INTERACTIVE COMMANDS]</p>
+<h2 id="calibrate">calibrate</h2>
+<p>Usage: <code>calibrate &lt;operation&gt; [options]</code></p>
+<p>Perform the specified transceiver calibration operation.</p>
+<p>Available operations:</p>
+<ul>
+<li><p>LMS internal DC offset auto-calibrations</p>
+<ul>
+<li><code>calibrate lms [show]</code></li>
+<li><code>calibrate lms tuning [value]</code></li>
+<li><code>calibrate lms txlpf [&lt;I filter&gt; &lt;Q filter&gt;]</code></li>
+<li><code>calibrate lms rxlpf [&lt;I filter&gt; &lt;Q filter&gt;]</code></li>
+<li><code>calibrate lms rxvga2 [&lt;DC ref&gt; &lt;I1&gt; &lt;Q1&gt; &lt;I2&gt; &lt;Q2&gt;]</code></li>
+</ul>
+<p>Perform the specified auto-calibration, or all of them if none are provided. When values are provided, these are used instead of the results of the auto-calibration procedure. Use <code>lms show</code> to read and print the current LMS calibration values.</p>
+<p>For <code>rxvga2</code>, <code>I1</code> and <code>Q1</code> are the Stage 1 I and Q components respectively, and <code>I2</code> and <code>Q2</code> are the Stage 2 I and Q components.</p></li>
+<li><p>RX and TX I/Q DC offset correction parameter calibration</p>
+<ul>
+<li><code>calibrate dc &lt;rx|tx&gt; [&lt;I&gt; &lt;Q&gt;]</code></li>
+<li><code>calibrate dc &lt;rxtx&gt;</code></li>
+</ul>
+<p>Calibrate the DC offset correction parameters for the current frequency and gain settings. If a I/Q values are provided, they are applied directly. <code>cal rxtx</code> is shorthand for <code>cal rx</code> followed by <code>cal tx</code>.</p></li>
+<li><p>RX and TX I/Q balance correction parameter calibration</p>
+<ul>
+<li><code>calibrate iq &lt;rx|tx&gt; &lt;gain|phase&gt; &lt;value&gt;</code></li>
+</ul>
+<p>Set the specified IQ gain or phase balance parameters.</p></li>
+<li><p>Generate RX or TX I/Q DC correction parameter tables</p>
+<ul>
+<li><code>calibrate table dc &lt;rx|tx&gt; [&lt;f_min&gt; &lt;f_max&gt; [f_inc]]</code></li>
+</ul>
+<p>Generate and write an I/Q correction parameter table to the current working directory, in a file named <code>&lt;serial&gt;_dc_&lt;rx|tx&gt;.tbl</code>. <code>f_min</code> and <code>f_max</code> are min and max frequencies to include in the table. <code>f_inc</code> is the frequency increment.</p>
+<p>By default, tables are generated over the entire frequency range, in 10 MHz steps.</p></li>
+<li><p>Generate RX or TX I/Q DC correction parameter tables for AGC Look Up Table</p>
+<ul>
+<li><code>calibrate table agc &lt;rx|tx&gt; [&lt;f_min&gt; &lt;f_max&gt; [f_inc]]</code></li>
+</ul>
+<p>Similar usage as <code>calibrate table dc</code> except the call will set gains to the AGC’s base gain value before running <code>calibrate table dc</code>.</p></li>
+</ul>
+<h2 id="clear">clear</h2>
+<p>Usage: <code>clear</code></p>
+<p>Clears the screen.</p>
+<h2 id="echo">echo</h2>
+<p>Usage: <code>echo [arg 1] [arg 2] ... [arg n]</code></p>
+<p>Echo each argument on a new line.</p>
+<h2 id="erase">erase</h2>
+<p>Usage: <code>erase &lt;offset&gt; &lt;count&gt;</code></p>
+<p>Erase specified erase blocks SPI flash.</p>
+<ul>
+<li><code>&lt;offset&gt;</code> - Erase block offset</li>
+<li><code>&lt;count&gt;</code> - Number of erase blocks to erase</li>
+</ul>
+<h2 id="flash_backup">flash_backup</h2>
+<p>Usage: <code>flash_backup &lt;file&gt; (&lt;type&gt; | &lt;address&gt; &lt;length&gt;)</code></p>
+<p>Back up flash data to the specified file. This command takes either two or four arguments. The two-argument invocation is generally recommended for non-development use.</p>
+<p>Parameters:</p>
+<ul>
+<li><p><code>&lt;type&gt;</code> - Type of backup.</p>
+<p>This selects the appropriate address and length values based upon the selected type.</p>
+<p>Valid options are:</p>
+<table style="width:93%;">
+<colgroup>
+<col style="width: 16%"></col>
+<col style="width: 76%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Option</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>cal</code></td>
+<td style="text-align: left;">Calibration data</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>fw</code></td>
+<td style="text-align: left;">Firmware</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>fpga40</code></td>
+<td style="text-align: left;">Metadata and bitstream for 40 kLE FPGA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>fpga115</code></td>
+<td style="text-align: left;">Metadata and bitstream for 115 kLE FPGA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>fpgaA4</code></td>
+<td style="text-align: left;">Metadata and bitstream for 49 kLE (A4) FPGA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>fpgaA5</code></td>
+<td style="text-align: left;">Metadata and bitstream for 77 kLE (A5) FPGA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>fpgaA9</code></td>
+<td style="text-align: left;">Metadata and bitstream for 301 kLE (A9) FPGA</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><code>&lt;address&gt;</code> - Address of data to back up. Must be erase block-aligned.</p></li>
+<li><p><code>&lt;len&gt;</code> - Length of region to back up. Must be erase block-aligned.</p></li>
+</ul>
+<p>Note: When an address and length are provided, the image type will default to <code>raw</code>.</p>
+<p>Examples:</p>
+<ul>
+<li><p><code>flash_backup cal.bin cal</code></p>
+<p>Backs up the calibration data region.</p></li>
+<li><p><code>flash_backup cal_raw.bin 0x30000 0x10000</code></p>
+<p>Backs up the calibration region as a raw data image.</p></li>
+</ul>
+<h2 id="flash_image">flash_image</h2>
+<p>Usage: <code>flash_image &lt;image&gt; [output options]</code></p>
+<p>Print a flash image’s metadata or create a new flash image. When provided with the name of a flash image file as the only argument, this command will print the metadata contents of the image.</p>
+<p>The following options may be used to create a new flash image.</p>
+<ul>
+<li><p><code>data=&lt;file&gt;</code></p>
+<p>File to containing data to store in the image.</p></li>
+<li><p><code>address=&lt;addr&gt;</code></p>
+<p>Flash address. The default depends upon <code>type</code> parameter.</p></li>
+<li><p><code>type=&lt;type&gt;</code></p>
+<p>Type of flash image. Defaults to <code>raw</code>.</p>
+<p>Valid options are:</p>
+<table style="width:93%;">
+<colgroup>
+<col style="width: 16%"></col>
+<col style="width: 76%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Option</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>cal</code></td>
+<td style="text-align: left;">Calibration data</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>fw</code></td>
+<td style="text-align: left;">Firmware</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>fpga40</code></td>
+<td style="text-align: left;">Metadata and bitstream for 40 kLE FPGA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>fpga115</code></td>
+<td style="text-align: left;">Metadata and bitstream for 115 kLE FPGA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>fpgaA4</code></td>
+<td style="text-align: left;">Metadata and bitstream for 49 kLE (A4) FPGA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>fpgaA5</code></td>
+<td style="text-align: left;">Metadata and bitstream for 77 kLE (A5) FPGA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>fpgaA9</code></td>
+<td style="text-align: left;">Metadata and bitstream for 301 kLE (A9) FPGA</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>raw</code></td>
+<td style="text-align: left;">Raw data. The address and length parameters must be provided if this type is selected.</td>
+</tr>
+</tbody>
+</table></li>
+<li><p><code>serial=&lt;serial&gt;</code></p>
+<p>Serial # to store in image. Defaults to zeros.</p></li>
+</ul>
+<h2 id="flash_init_cal">flash_init_cal</h2>
+<p>Usage: <code>flash_init_cal &lt;fpga_size&gt; &lt;vctcxo_trim&gt; [&lt;output_file&gt;]</code></p>
+<p>Create and write a new calibration data region to the currently opened device, or to a file. Be sure to back up calibration data prior to running this command. (See the <code>flash_backup</code> command.)</p>
+<ul>
+<li><p><code>&lt;fpga_size&gt;</code></p>
+<p>Either 40 or 115, depending on the device model.</p></li>
+<li><p><code>&lt;vctcxo_trim&gt;</code></p>
+<p>VCTCXO/DAC trim value (<code>0x0</code>-<code>0xffff</code>)</p></li>
+<li><p><code>&lt;output_file&gt;</code></p>
+<p>File to write calibration data to. When this argument is provided, no data will be written to the device’s flash.</p></li>
+</ul>
+<h2 id="flash_restore">flash_restore</h2>
+<p>Usage: <code>flash_restore &lt;file&gt; [&lt;address&gt; &lt;length&gt;]</code></p>
+<p>Restore flash data from a file, optionally overriding values in the image metadata.</p>
+<ul>
+<li><p><code>&lt;address&gt;</code></p>
+<p>Defaults to the address specified in the provided flash image file.</p></li>
+<li><p><code>&lt;length&gt;</code></p>
+<p>Defaults to length of the data in the provided image file.</p></li>
+</ul>
+<h2 id="fw_log">fw_log</h2>
+<p>Usage: <code>fw_log</code> [filename]</p>
+<p>Read the contents of the device’s firmware log and write it to the specified file. If no filename is specified, the log content is written to stdout.</p>
+<h2 id="generate">generate</h2>
+<p>Usage: generate &lt;filename&gt; [parameters] &lt;signal_type&gt;</p>
+<p>Configuration parameters take the form param=value, and may be specified in a single or multiple rx config invocations. Below is a list of available parameters.</p>
+<pre><code>---------------------------------------------------------------------------
+        Parameter Description
+----------------- ---------------------------------------------------------
+                n Number of samples to generate. 0 = unlimited.
+
+              mag Magnitude of signal [-mag, mag]. Default is 2047
+
+           format Output file format. One of the following:
+
+                  csv: CSV of SC16 Q11 or SC8 Q7 samples (default)
+
+                  bin: Raw SC16 Q11 or SC8 Q7 DAC samples
+
+                 Note: Sample format will depend on the
+                       bitmode state</code></pre>
+<p>Generates signal for use with tx command. Signal types include:</p>
+<ul>
+<li><p>cw <period></p>
+<p>Generate a complex tone with a period relative to system sampling rate</p>
+<p>period indicates the number of samples between 2*M_PI. For example, cw of 4 would generate a complex tone at +4/F_s. With a sampling rate of 20MSPS, the complex tone would be generated at +5MHz. A negative period indicates negative frequency.</p></li>
+<li><p>prn</p>
+<p>Generates pseudorandom noise<br />
+</p></li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><p>To generate a CSV for a complex tone at -F_s/4 with a full scale swing of -500 to 500:</p>
+<p>generate output.csv format=csv mag=500 cw 4</p></li>
+<li><p>To generate 10,000,000 samples of PRN:</p>
+<p>generate output.csv format=csv n=10e6 prn</p></li>
+</ul>
+<h2 id="help">help</h2>
+<p>Usage: <code>help [&lt;command&gt;]</code></p>
+<p>Provides extended help, like this, on any command.</p>
+<h2 id="info">info</h2>
+<p>Usage: <code>info</code></p>
+<p>Prints the following information about an opened device:</p>
+<ul>
+<li>Serial number</li>
+<li>VCTCXO DAC calibration value</li>
+<li>FPGA size</li>
+<li>Whether or not the FPGA is loaded</li>
+<li>USB bus, address, and speed</li>
+<li>Backend (Denotes which device interface code is being used.)</li>
+<li>Instance number</li>
+</ul>
+<h2 id="help-1">help</h2>
+<p>Usage: <code>help [&lt;command&gt;]</code></p>
+<p>Provides extended help, like this, on any command.</p>
+<h2 id="info-1">info</h2>
+<p>Usage: <code>info</code></p>
+<p>Prints the following information about an opened device:</p>
+<ul>
+<li>Serial number</li>
+<li>VCTCXO DAC calibration value</li>
+<li>FPGA size</li>
+<li>Whether or not the FPGA is loaded</li>
+<li>USB bus, address, and speed</li>
+<li>Backend (Denotes which device interface code is being used.)</li>
+<li>Instance number</li>
+</ul>
+<h2 id="jump_to_boot">jump_to_boot</h2>
+<p>Usage: <code>jump_to_boot</code></p>
+<p>Clear out a FW signature word in flash and jump to FX3 bootloader.</p>
+<p>The device will continue to boot into the FX3 bootloader across power cycles until new firmware is written to the device.</p>
+<h2 id="load">load</h2>
+<p>Usage: <code>load &lt;fpga|fx3&gt; &lt;filename&gt;</code></p>
+<p>Load an FPGA bitstream or program the FX3’s SPI flash.</p>
+<h2 id="xb">xb</h2>
+<p>Usage: <code>xb &lt;board_model&gt; &lt;subcommand&gt; [parameters]</code></p>
+<p>Enable or configure an expansion board.</p>
+<p>Valid values for <code>board_model</code>:</p>
+<ul>
+<li><p><code>100</code></p>
+<p>XB-100 GPIO expansion board</p></li>
+<li><p><code>200</code></p>
+<p>XB-200 LF/MF/HF/VHF transverter expansion board</p></li>
+<li><p><code>300</code></p>
+<p>XB-300 amplifier board</p></li>
+</ul>
+<p>Common subcommands:</p>
+<ul>
+<li><p><code>enable</code></p>
+<p>Enable the XB-100, XB-200, or XB-300 expansion board.</p></li>
+</ul>
+<p>XB-200 subcommands:</p>
+<ul>
+<li><p><code>filter [rx|tx] [50|144|222|custom|auto_1db|auto_3db]</code></p>
+<p>Selects the specified RX or TX filter on the XB-200 board. Below are descriptions of each of the filter options.</p>
+<ul>
+<li><p>50</p>
+<pre><code>Select the 50-54 MHz (6 meter band) filter.</code></pre></li>
+<li><p>144</p>
+<pre><code>Select the 144-148 MHz (2 meter band) filter.</code></pre></li>
+<li><p>222</p>
+<pre><code>Select the 222-225 MHz (1.25 meter band) filter. Realistically,
+this filter option is actually slightly wider, covering
+206 MHz - 235 MHz.</code></pre></li>
+<li><p>custom</p>
+<pre><code>Selects the custom filter path. The user should connect a filter
+along the corresponding FILT and FILT-ANT connections when using
+this option.  Alternatively one may jumper the FILT and FILT-ANT
+connections to achieve &quot;no filter&quot; for reception. (However, this is
+_highly_ discouraged for transmissions.)</code></pre></li>
+<li><p>auto_1db</p>
+<pre><code>Automatically selects one of the above choices based upon frequency
+and the filters&#39; 1dB points. The custom path is used for cases
+that are not associated with the on-board filters.</code></pre></li>
+<li><p>auto_3db</p>
+<pre><code>Automatically selects one of the above choices based upon frequency
+and the filters&#39; 3dB points. The custom path is used for cases
+that are not associated with the on-board filters.</code></pre></li>
+</ul></li>
+</ul>
+<p>XB-300 subcommands:</p>
+<ul>
+<li><p><code>&lt;pa|lna|aux&gt; [on|off]</code></p>
+<p>Enable or disable the power amplifier (PA), low-noise amplifier (lna) or auxillary LNA (aux). The current state if the specified device is printed if [on|off] is not specified.</p>
+<p>Note: The auxillary path on the XB-300 is not populated with components by default; the <code>aux</code> control will have no effect upon the RX signal. This option is available for users to modify their board with custom hardware.</p></li>
+<li><p><code>&lt;pwr&gt;</code></p>
+<p>Read the current Power Detect (PDET) voltage and compute the output power.</p></li>
+<li><p><code>trx &lt;rx|tx&gt;</code></p>
+<p>The default XB-300 hardware configuration includes separate RX and TX paths. However, users wishing to use only a single antenna for TRX can do so via a modification to resistor population options on the XB-300 and use this command to switch between RX an TX operation. (See R8, R10, and R23 on the schematic.)</p></li>
+</ul>
+<p>Examples:</p>
+<ul>
+<li><p><code>xb 200 enable</code></p>
+<p>Enables and configures the XB-200 transverter expansion board.</p></li>
+<li><p><code>xb 200 filter rx 144</code></p>
+<p>Selects the 144-148 MHz receive filter on the XB-200 transverter expansion board.</p></li>
+<li><p><code>xb 300 enable</code></p>
+<p>Enables and configures the use of GPIOs to interact with the XB-300. The PA and LNA will disabled by default.</p></li>
+<li><p><code>xb 300 lna on</code></p>
+<p>Enables the RX LNA on the XB-300. LED D1 (green) is illuminated when the LNA is enabled, and off when it is disabled.</p></li>
+<li><p><code>xb 300 pa off</code></p>
+<p>Disables the TX PA on the XB-300. LED D2 (blue) is illuminated when the PA is enabled, and off when it is disabled.</p></li>
+</ul>
+<h2 id="mimo">mimo</h2>
+<p>Usage: <code>mimo [master | slave]</code></p>
+<p>Modify device MIMO operation.</p>
+<p>IMPORTANT: This command is deprecated and has been superseded by <code>&quot;print/set smb_mode&quot;</code>. For usage text, run: “<code>set smb_mode</code>”</p>
+<h2 id="open">open</h2>
+<p>Usage: <code>open [device identifiers]</code></p>
+<p>Open the specified device for use with successive commands. Any previously opened device will be closed.</p>
+<p>The general form of the device identifier string is:</p>
+<p><code>&lt;backend&gt;:[device=&lt;bus&gt;:&lt;addr&gt;] [instance=&lt;n&gt;] [serial=&lt;serial&gt;]</code></p>
+<p>See the <code>bladerf_open()</code> documentation in libbladeRF for the complete device specifier format.</p>
+<h2 id="peek">peek</h2>
+<p>Usage: <code>peek &lt;rfic|pll|dac|lms|si&gt; &lt;address&gt; [num_addresses]</code></p>
+<p>The peek command can read any of the devices hanging off the FPGA. This includes the:</p>
+<ul>
+<li>bladeRF 1: LMS6002D transceiver, VCTCXO trim DAC, Si5338 clock generator</li>
+<li>bladeRF 2: AD9361 transceiver, VCTCXO trim DAC, ADF4002 frequency synthesizer</li>
+</ul>
+<p>If <code>num_addresses</code> is supplied, the address is incremented by 1 and another peek is performed for that many addresses.</p>
+<p>Valid Address Ranges:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Device</th>
+<th style="text-align: left;">Address Range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>rfic</code></td>
+<td style="text-align: left;">0 to 0x3F7 (1015)</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>pll</code></td>
+<td style="text-align: left;">0 to 3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>dac</code></td>
+<td style="text-align: left;">0 to 255</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>lms</code></td>
+<td style="text-align: left;">0 to 127</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>si</code></td>
+<td style="text-align: left;">0 to 255</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<ul>
+<li><code>peek si ...</code></li>
+</ul>
+<h2 id="poke">poke</h2>
+<p>Usage: <code>poke &lt;rfic|pll|dac|lms|si&gt; &lt;address&gt; &lt;data&gt;</code></p>
+<p>The poke command can write any of the devices hanging off the FPGA. This includes the:</p>
+<ul>
+<li>bladeRF 1: LMS6002D transceiver, VCTCXO trim DAC, Si5338 clock generator</li>
+<li>bladeRF 2: AD9361 transceiver, VCTCXO trim DAC, ADF4002 frequency synthesizer</li>
+</ul>
+<p>Valid Address Ranges:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Device</th>
+<th style="text-align: left;">Address Range</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>rfic</code></td>
+<td style="text-align: left;">0 to 0x3F7 (1015)</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>pll</code></td>
+<td style="text-align: left;">0 to 3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>dac</code></td>
+<td style="text-align: left;">0 to 255</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>lms</code></td>
+<td style="text-align: left;">0 to 127</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>si</code></td>
+<td style="text-align: left;">0 to 255</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<ul>
+<li><code>poke lms ...</code></li>
+</ul>
+<h2 id="print">print</h2>
+<p>Usage: <code>print [parameter]</code></p>
+<p>The <code>print</code> command takes a parameter to print. Available parameters are listed below. If no parameter is specified, all parameters are printed.</p>
+<p>Common parameters:</p>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 19%"></col>
+<col style="width: 79%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Parameter</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>bandwidth</code></td>
+<td style="text-align: left;">Bandwidth settings</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>frequency</code></td>
+<td style="text-align: left;">Frequency settings</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>agc</code></td>
+<td style="text-align: left;">Automatic gain control</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>loopback</code></td>
+<td style="text-align: left;">Loopback settings</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>rx_mux</code></td>
+<td style="text-align: left;">FPGA RX FIFO input mux setting</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>gain</code></td>
+<td style="text-align: left;">Gain settings</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>samplerate</code></td>
+<td style="text-align: left;">Samplerate settings</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>trimdac</code></td>
+<td style="text-align: left;">VCTCXO Trim DAC settings</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>tuning_mode</code></td>
+<td style="text-align: left;">Tuning mode settings</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>bitmode</code></td>
+<td style="text-align: left;">Sample bit width</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>hardware</code></td>
+<td style="text-align: left;">Low-level hardware status</td>
+</tr>
+</tbody>
+</table>
+<p>BladeRF1-only parameters:</p>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 19%"></col>
+<col style="width: 79%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Parameter</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>gpio</code></td>
+<td style="text-align: left;">FX3 &lt;-&gt; FPGA GPIO state</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>lnagain</code></td>
+<td style="text-align: left;">RX LNA gain, in dB (deprecated)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>rxvga1</code></td>
+<td style="text-align: left;">RXVGA1 gain, in dB (deprecated)</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>rxvga2</code></td>
+<td style="text-align: left;">RXVGA2 gain, in dB (deprecated)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>txvga1</code></td>
+<td style="text-align: left;">TXVGA1 gain, in dB (deprecated)</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>txvga2</code></td>
+<td style="text-align: left;">TXVGA2 gain, in dB (deprecated)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>sampling</code></td>
+<td style="text-align: left;">External or internal sampling mode</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>smb_mode</code></td>
+<td style="text-align: left;">SMB clock port mode of operation</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>vctcxo_tamer</code></td>
+<td style="text-align: left;">Current VCTCXO tamer mode</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>xb_gpio</code></td>
+<td style="text-align: left;">Expansion board GPIO values</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>xb_gpio_dir</code></td>
+<td style="text-align: left;">Expansion board GPIO direction (1=output, 0=input)</td>
+</tr>
+</tbody>
+</table>
+<p>BladeRF2-only parameters:</p>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 19%"></col>
+<col style="width: 79%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Parameter</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>clock_sel</code></td>
+<td style="text-align: left;">System clock selection</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>clock_out</code></td>
+<td style="text-align: left;">Clock output selection</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>rssi</code></td>
+<td style="text-align: left;">Received signal strength indication</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>clock_ref</code></td>
+<td style="text-align: left;">ADF4002 chip status</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>refin_freq</code></td>
+<td style="text-align: left;">ADF4002 reference clock frequency</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>biastee</code></td>
+<td style="text-align: left;">Current bias-tee status</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>filter</code></td>
+<td style="text-align: left;">RFIC FIR filter selection</td>
+</tr>
+</tbody>
+</table>
+<h2 id="probe">probe</h2>
+<p>Usage: <code>probe [strict]</code></p>
+<p>Search for attached bladeRF device and print a list of results.</p>
+<p>Without specifying <code>strict</code>, the lack of any available devices is not considered an error.</p>
+<p>When provided the optional <code>strict</code> argument, this command will treat the situation where no devices are found as an error, causing scripts or lists of commands provided via the <code>-e</code> command line argument to terminate immediately.</p>
+<h2 id="quit">quit</h2>
+<p>Usage: <code>quit</code></p>
+<p>Exit the CLI.</p>
+<h2 id="recover">recover</h2>
+<p>Usage: <code>recover [&lt;bus&gt; &lt;address&gt; &lt;firmware file&gt;]</code></p>
+<p>Load firmware onto a device running in bootloader mode, or list all devices currently in bootloader mode.</p>
+<p>With no arguments, this command lists the USB bus and address for FX3-based devices running in bootloader mode.</p>
+<p>When provided a bus, address, and path to a firmware file, the specified device will be loaded with and begin executing the provided firmware.</p>
+<p>In most cases, after successfully loading firmware into the device’s RAM, users should open the device with the “<code>open</code>” command, and write the firmware to flash via “<code>load fx3 &lt;firmware file&gt;</code>”</p>
+<h2 id="run">run</h2>
+<p>Usage: <code>run &lt;script&gt;</code></p>
+<p>Run the provided script.</p>
+<h2 id="rx">rx</h2>
+<p>Usage: <code>rx &lt;start | stop | wait | config [param=val [param=val [...]]&gt;</code></p>
+<p>Receive IQ samples and write them to the specified file. Reception is controlled and configured by one of the following:</p>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 16%"></col>
+<col style="width: 81%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Command</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>start</code></td>
+<td style="text-align: left;">Start receiving samples</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>stop</code></td>
+<td style="text-align: left;">Stop receiving samples</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>wait</code></td>
+<td style="text-align: left;">Wait for sample transmission to complete, or until a specified amount of time elapses</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>config</code></td>
+<td style="text-align: left;">Configure sample reception. If no parameters are provided, the current parameters are printed.</td>
+</tr>
+</tbody>
+</table>
+<p>Running <code>rx</code> without any additional commands is valid shorthand for <code>rx config</code>.</p>
+<p>The <code>wait</code> command takes an optional <code>timeout</code> parameter. This parameter defaults to units of milliseconds (<code>ms</code>). The timeout unit may be specified using the <code>ms</code> or <code>s</code> suffixes. If this parameter is not provided, the command will wait until the reception completes or <code>Ctrl-C</code> is pressed.</p>
+<p>Configuration parameters take the form <code>param=value</code>, and may be specified in a single or multiple <code>rx config</code> invocations. Below is a list of available parameters.</p>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 22%"></col>
+<col style="width: 76%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Parameter</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>n</code></td>
+<td style="text-align: left;">Number of samples to receive. 0 = inf.</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>file</code></td>
+<td style="text-align: left;">Filename to write received samples to</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>format</code></td>
+<td style="text-align: left;">Output file format. One of the following:</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"></td>
+<td style="text-align: left;"><code>csv</code>: CSV of SC16 Q11 or SC8 Q7 samples</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"></td>
+<td style="text-align: left;"><code>bin</code>: Raw SC16 Q11 or SC8 Q7 DAC samples</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"></td>
+<td style="text-align: left;">Note: Sample format will depend on the <code>bitmode</code> state</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>samples</code></td>
+<td style="text-align: left;">Number of samples per buffer to use in the asynchronous stream. Must be divisible by 1024 and &gt;= 1024.</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>buffers</code></td>
+<td style="text-align: left;">Number of sample buffers to use in the asynchronous stream. The min value is 4.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>xfers</code></td>
+<td style="text-align: left;">Number of simultaneous transfers to allow the asynchronous stream to use. This should be less than the <code>buffers</code> parameter.</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>timeout</code></td>
+<td style="text-align: left;">Data stream timeout. With no suffix, the default unit is <code>ms</code>. The default value is 1000 ms (1 s). Valid suffixes are <code>ms</code> and <code>s</code>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>channel</code></td>
+<td style="text-align: left;">Comma-delimited list of physical RF channels to use</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<ul>
+<li><p><code>rx config file=/tmp/data.bin format=bin n=10K</code></p>
+<p>Receive (10240 = 10 * 1024) samples, writing them to <code>/tmp/data.bin</code> in the binary DAC format.</p></li>
+<li><p><code>rx config file=mimo.csv format=csv n=32768 channel=1,2</code></p>
+<p>Receive 32768 samples from RX1 and RX2, outputting them to a file named <code>mimo.csv</code>, with four columns (RX1 I, RX1 Q, RX2 I, RX2 Q).</p></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>The <code>n</code>, <code>samples</code>, <code>buffers</code>, and <code>xfers</code> parameters support the suffixes <code>K</code>, <code>M</code>, and <code>G</code>, which are multiples of 1024.</li>
+<li>An <code>rx stop</code> followed by an <code>rx start</code> will result in the samples file being truncated. If this is not desired, be sure to run <code>rx config</code> to set another file before restarting the rx stream.</li>
+<li>For higher sample rates, it is advised that the <code>bin</code>ary output format be used, and the output file be written to RAM (e.g. <code>/tmp</code>, <code>/dev/shm</code>), if space allows. For larger captures at higher sample rates, consider using an SSD instead of a HDD.</li>
+<li>The CSV format produces two columns per channel, with the first two columns corresponding to the I,Q pair for the first channel configured with the <code>channel</code> parameter; the next two columns corresponding to the I,Q of the second channel, and so on.</li>
+</ul>
+<h2 id="trigger">trigger</h2>
+<p>Usage: <code>trigger [&lt;trigger&gt; &lt;tx | rx&gt; [&lt;off slave master fire&gt;]]</code></p>
+<p>If used without parameters, this command prints the state of all triggers. When <trigger> and &lt;tx | rx&gt; and supplied, the specified trigger is printed.</p>
+<p>Below are the available options for <trigger>:</p>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 18%"></col>
+<col style="width: 80%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Trigger</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>J71-4</code></td>
+<td style="text-align: left;">Trigger signal is on <code>mini_exp1</code> (bladeRF x40/x115, J71, pin 4).</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>J51-1</code></td>
+<td style="text-align: left;">Trigger signal is on <code>mini_exp1</code> (bladeRF xA4/xA5/xA9, J51, pin 1).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>Miniexp-1</code></td>
+<td style="text-align: left;">Trigger signal is on <code>mini_exp1</code>, hardware-independent</td>
+</tr>
+</tbody>
+</table>
+<p>Note that all three of the above options map to the same logical port on all devices (<code>mini_exp[1]</code>). Multiple options are provided for reverse compatibility and clarity.</p>
+<p>The trigger is controlled and configured by providing the last argument, which may be one of the following:</p>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 16%"></col>
+<col style="width: 81%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Command</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>off</code></td>
+<td style="text-align: left;">Clears fire request and disables trigger functionality.</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>slave</code></td>
+<td style="text-align: left;">Configures trigger as slave, clears fire request, and arms the device.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>master</code></td>
+<td style="text-align: left;">Configures trigger as master, clears fire request, and arms the device.</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>fire</code></td>
+<td style="text-align: left;">Sets fire request. Only applicable to the master.</td>
+</tr>
+</tbody>
+</table>
+<p>A trigger chain consists of a single or multiple bladeRF units and may contain TX and RX modules. If multiple bladeRF units are used they need to be connected via the signal specified by <trigger> and a common ground.</p>
+<p>The following sequence of commands should be used to ensure proper synchronization. It is assumed that all triggers are off initially.</p>
+<ol type="1">
+<li><p>Configure designated trigger master</p>
+<p><strong>IMPORTANT</strong></p>
+<p>Never configure two devices as trigger masters on a single chain. Contention on the same signal could damage the devices.</p></li>
+<li><p>Configure all other devices as trigger slaves</p></li>
+<li><p>Configure and start transmit or receive streams.</p>
+<p>The operation will stall until the triggers fire. As such, sufficiently large timeouts should be used to allow the trigger signal to be emitted by the master and received by the slaves prior to libbladeRF returning BLADERF_ERR_TIMEOUT.</p></li>
+<li><p>Set fire-request on master trigger</p>
+<p>All devices will synchronously start transmitting or receiving data.</p></li>
+<li><p>Finish the transmit and receive tasks as usual</p></li>
+<li><p>Re-configure the master and slaves to clear fire requests and re-arm.</p>
+<p>Steps 1 through 5 may be repeated as neccessary.</p></li>
+<li><p>Disable triggering on all slaves</p></li>
+<li><p>Disable triggering on master</p></li>
+</ol>
+<p>Notes:</p>
+<ul>
+<li>Synchronizing transmitters and receivers on a single chain will cause an offset of 11 samples between TX and RX; these samples should be discarded. This is caused by different processing pipeline lengths of TX and RX. This value might change if the FPGA code is updated in the future.</li>
+</ul>
+<h2 id="tx">tx</h2>
+<p>Usage: <code>tx &lt;start | stop | wait | config [parameters]&gt;</code></p>
+<p>Read IQ samples from the specified file and transmit them. Transmission is controlled and configured by one of the following:</p>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 16%"></col>
+<col style="width: 81%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Command</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>start</code></td>
+<td style="text-align: left;">Start transmitting samples</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>stop</code></td>
+<td style="text-align: left;">Stop transmitting samples</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>wait</code></td>
+<td style="text-align: left;">Wait for sample transmission to complete, or until a specified amount of time elapses</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>config</code></td>
+<td style="text-align: left;">Configure sample transmission. If no parameters are provided, the current parameters are printed.</td>
+</tr>
+</tbody>
+</table>
+<p>Running <code>tx</code> without any additional commands is valid shorthand for <code>tx config</code>.</p>
+<p>The <code>wait</code> command takes an optional <code>timeout</code> parameter. This parameter defaults to units of milliseconds (<code>ms</code>). The timeout unit may be specified using the <code>ms</code> or <code>s</code> suffixes. If this parameter is not provided, the command will wait until the transmission completes or <code>Ctrl-C</code> is pressed.</p>
+<p>Configuration parameters take the form <code>param=value</code>, and may be specified in a single or multiple <code>tx config</code> invocations. Below is a list of available parameters.</p>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 22%"></col>
+<col style="width: 76%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Parameter</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>file</code></td>
+<td style="text-align: left;">Filename to read samples from</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>format</code></td>
+<td style="text-align: left;">Input file format. One of the following:</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"></td>
+<td style="text-align: left;"><code>csv</code>: CSV of SC16 Q11 or SC8 Q7 samples</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"></td>
+<td style="text-align: left;"><code>bin</code>: Raw SC16 Q11 or SC8 Q7 DAC samples</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"></td>
+<td style="text-align: left;">Note: Sample format will depend on the <code>bitmode</code> state</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>repeat</code></td>
+<td style="text-align: left;">The number of times the file contents should be transmitted. 0 implies repeat until stopped.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>delay</code></td>
+<td style="text-align: left;">The number of microseconds to delay between retransmitting file contents. 0 implies no delay.</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>samples</code></td>
+<td style="text-align: left;">Number of samples per buffer to use in the asynchronous stream. Must be divisible by 1024 and &gt;= 1024.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>buffers</code></td>
+<td style="text-align: left;">Number of sample buffers to use in the asynchronous stream. The min value is 4.</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>xfers</code></td>
+<td style="text-align: left;">Number of simultaneous transfers to allow the asynchronous stream to use. This should be &lt; the <code>buffers</code> parameter.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>timeout</code></td>
+<td style="text-align: left;">Data stream timeout. With no suffix, the default unit is ms. The default value is 1000 ms (1 s). Valid suffixes are ‘ms’ and ‘s’.</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>channel</code></td>
+<td style="text-align: left;">Comma-delimited list of physical RF channels to use</td>
+</tr>
+</tbody>
+</table>
+<p>Example:</p>
+<ul>
+<li><p><code>tx config file=data.bin format=bin repeat=2 delay=250000</code></p>
+<p>Transmitting the contents of <code>data.bin</code> two times, with a ~250ms delay between transmissions.</p></li>
+<li><p><code>tx config file=mimo.csv format=csv repeat=0 channel=1,2</code></p>
+<p>Transmitting the contents of <code>mimo.csv</code> repeatedly, with the first channel in the file mapped to channel TX1 and the second channel mapped to TX2.</p></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li>The <code>n</code>, <code>samples</code>, <code>buffers</code>, and <code>xfers</code> parameters support the suffixes <code>K</code>, <code>M</code>, and <code>G</code>, which are multiples of 1024.</li>
+<li>For higher sample rates, it is advised that the input file be stored in RAM (e.g. <code>/tmp</code>, <code>/dev/shm</code>) or on an SSD, rather than a HDD.</li>
+<li>The CSV format expects two columns per channel, with the first two columns corresponding to the I,Q pair for the first channel configured with the <code>channel</code> parameter; the next two columns corresponding to the I,Q of the second channel, and so on. For example, in the mimo.csv example above, <code>-128,128,-256,256</code> would transmit (-128,128) on TX1 and (-256,256) on TX2.</li>
+<li>When providing CSV data, this command will first convert it to a binary format, stored in a file in the current working directory. During this process, out-of-range values will be clamped.</li>
+<li>When using a binary format, the user is responsible for ensuring that the provided data values are within the allowed range. This prerequisite alleviates the need for this program to perform range checks in time-sensitive callbacks.</li>
+</ul>
+<h2 id="set">set</h2>
+<p>Usage: <code>set &lt;parameter&gt; &lt;arguments&gt;</code></p>
+<p>The <code>set</code> command takes a parameter and an arbitrary number of arguments for that particular parameter. In general, <code>set &lt;parameter&gt;</code> will display more help for that parameter.</p>
+<p>Common parameters:</p>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 19%"></col>
+<col style="width: 79%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Parameter</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>bandwidth</code></td>
+<td style="text-align: left;">Bandwidth settings</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>frequency</code></td>
+<td style="text-align: left;">Frequency settings</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>agc</code></td>
+<td style="text-align: left;">Automatic gain control</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>loopback</code></td>
+<td style="text-align: left;">Loopback settings</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>rx_mux</code></td>
+<td style="text-align: left;">FPGA RX FIFO input mux mode</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>gain</code></td>
+<td style="text-align: left;">Gain settings</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>samplerate</code></td>
+<td style="text-align: left;">Samplerate settings</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>trimdac</code></td>
+<td style="text-align: left;">VCTCXO Trim DAC settings</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>tuning_mode</code></td>
+<td style="text-align: left;">Tuning mode settings</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>bitmode</code></td>
+<td style="text-align: left;">Sample bit width</td>
+</tr>
+</tbody>
+</table>
+<p>BladeRF1-only parameters:</p>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 19%"></col>
+<col style="width: 79%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Parameter</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>gpio</code></td>
+<td style="text-align: left;">FX3 &lt;-&gt; FPGA GPIO state</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>lnagain</code></td>
+<td style="text-align: left;">RX LNA gain, in dB. Values: 0, 3, 6 (deprecated)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>rxvga1</code></td>
+<td style="text-align: left;">RXVGA1 gain, in dB. Range: [5, 30] (deprecated)</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>rxvga2</code></td>
+<td style="text-align: left;">RXVGA2 gain, in dB. Range: [0, 30] (deprecated)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>txvga1</code></td>
+<td style="text-align: left;">TXVGA1 gain, in dB. Range: [-35, -4] (deprecated)</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>txvga2</code></td>
+<td style="text-align: left;">TXVGA2 gain, in dB. Range: [0, 25] (deprecated)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>sampling</code></td>
+<td style="text-align: left;">External or internal sampling mode</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>smb_mode</code></td>
+<td style="text-align: left;">SMB clock port mode of operation</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>vctcxo_tamer</code></td>
+<td style="text-align: left;">VCTCXO tamer mode. Options: Disabled, 1PPS, 10MHz</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>xb_gpio</code></td>
+<td style="text-align: left;">Expansion board GPIO values</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>xb_gpio_dir</code></td>
+<td style="text-align: left;">Expansion board GPIO direction (1=output, 0=input)</td>
+</tr>
+</tbody>
+</table>
+<p>BladeRF2-only parameters:</p>
+<table style="width:99%;">
+<colgroup>
+<col style="width: 19%"></col>
+<col style="width: 79%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Parameter</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><code>clock_sel</code></td>
+<td style="text-align: left;">System clock selection</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>clock_out</code></td>
+<td style="text-align: left;">Clock output selection</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>rssi</code></td>
+<td style="text-align: left;">Received signal strength indication</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>clock_ref</code></td>
+<td style="text-align: left;">Enables (1) or disables (0) the ADF4002 chip</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>refin_freq</code></td>
+<td style="text-align: left;">ADF4002 reference clock frequency</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;"><code>biastee</code></td>
+<td style="text-align: left;">Enables or disables the bias tee on a given channel</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><code>filter</code></td>
+<td style="text-align: left;">RFIC FIR filter selection</td>
+</tr>
+</tbody>
+</table>
+<h2 id="version">version</h2>
+<p>Usage: <code>version</code></p>
+<p>Prints version information for host software and the current device.</p>
+</body>
+</html>

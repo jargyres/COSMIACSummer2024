@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/bladeRF-fsk_test_correlator.dir/src/correlator.c.o CMakeFiles/bladeRF-fsk_test_correlator.dir/src/utils.c.o CMakeFiles/bladeRF-fsk_test_correlator.dir/src/fsk.c.o -o ../../../output/bladeRF-fsk_test_correlator  -lm 

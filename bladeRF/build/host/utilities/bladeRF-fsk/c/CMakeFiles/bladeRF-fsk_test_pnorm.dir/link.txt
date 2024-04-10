@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/bladeRF-fsk_test_pnorm.dir/src/pnorm.c.o -o ../../../output/bladeRF-fsk_test_pnorm  -lm 
