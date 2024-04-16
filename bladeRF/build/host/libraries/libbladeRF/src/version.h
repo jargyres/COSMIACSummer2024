@@ -1,7 +1,7 @@
 #ifndef VERSION_H_
 #define VERSION_H_
 
-#define LIBBLADERF_VERSION "2.5.0-git-88a19293-dirty"
+#define LIBBLADERF_VERSION "2.5.0-git-4dd52fd-dirty"
 
 // clang-format off
 #define LIBBLADERF_VERSION_MAJOR 2

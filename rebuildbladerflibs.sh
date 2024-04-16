@@ -1,6 +1,6 @@
 . bladerfvenv/bin/activate
 cd bladeRF/
-sudo rm -r build/*
+# sudo rm -r build/*
 cd build/
 cmake ../
 make -j8

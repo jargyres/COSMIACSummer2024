@@ -23,7 +23,7 @@ import enum
 import collections
 
 import cffi
-
+import struct
 from sys import platform
 
 from ._cdef import header
@@ -264,6 +264,27 @@ class PowerSource(enum.Enum):
 
     def __str__(self):
         return self.name
+    
+class TriggerRole(enum.Enum):
+    Invalid = libbladeRF.BLADERF_TRIGGER_ROLE_INVALID
+    Disabled = libbladeRF.BLADERF_TRIGGER_ROLE_DISABLED
+    Master = libbladeRF.BLADERF_TRIGGER_ROLE_MASTER
+    Slave = libbladeRF.BLADERF_TRIGGER_ROLE_SLAVE
+
+class TriggerSignal(enum.Enum):
+    Invalid = libbladeRF.BLADERF_TRIGGER_INVALID
+    J71_4 = libbladeRF.BLADERF_TRIGGER_J71_4
+    J51_1 = libbladeRF.BLADERF_TRIGGER_J51_1
+    Mini_exp_1 = libbladeRF.BLADERF_TRIGGER_MINI_EXP_1
+    User0 = libbladeRF.BLADERF_TRIGGER_USER_0
+    User1 = libbladeRF.BLADERF_TRIGGER_USER_1
+    User2 = libbladeRF.BLADERF_TRIGGER_USER_2
+    User3 = libbladeRF.BLADERF_TRIGGER_USER_3
+    User4 = libbladeRF.BLADERF_TRIGGER_USER_4
+    User5 = libbladeRF.BLADERF_TRIGGER_USER_5
+    User6 = libbladeRF.BLADERF_TRIGGER_USER_6
+    User7 = libbladeRF.BLADERF_TRIGGER_USER_7
+
 
 
 class PMICRegister(enum.Enum):
@@ -813,6 +834,47 @@ class BladeRF:
     def printfromC(self):
         ret = libbladeRF.printfromC()
         _check_error(ret)
+
+    def master_trigger_init(self, ch, signal):
+
+        trigger = ffi.new("struct bladerf_trigger *trigger")
+
+        ret = libbladeRF.bladerf_master_trigger_init(self.dev[0], ch, signal, trigger)
+
+        _check_error(ret)
+
+        return trigger
+
+
+    def trigger_init(self, ch, role, signal):
+        trigger = ffi.new("struct bladerf_trigger *trigger", [ch, role, signal, 0])
+
+        ret = libbladeRF.bladerf_trigger_init(self.dev[0], ch,
+                                                      signal, trigger)
+        _check_error(ret)
+        return trigger
+    
+    def trigger_arm(self, trigger, arm):
+        # trigger = ffi.new("struct bladerf_trigger *trigger")
+        ret = libbladeRF.bladerf_trigger_arm(self.dev[0], trigger, arm, 0, 0)
+        _check_error(ret)
+        
+    
+    def trigger_fire(self, trigger):
+        ret = libbladeRF.bladerf_trigger_fire(self.dev[0], trigger)
+        _check_error(ret)
+
+    def trigger_state(self, trigger):
+        is_armed = ffi.new("_Bool *")
+        has_fired = ffi.new("_Bool *")
+        fire_requested = ffi.new("_Bool *")
+        reserved1 = ffi.new("uint64_t *")
+        reserved2 = ffi.new("uint64_t *")
+        ret = libbladeRF.bladerf_trigger_state(self.dev[0], trigger, is_armed, has_fired, fire_requested, reserved1, reserved2)
+        print("armed = {}, fired = {}, fire_requested = {}".format(is_armed[0], has_fired[0], fire_requested[0]))
+        _check_error(ret)
+        
+
         
     # Sample RX Mux
 

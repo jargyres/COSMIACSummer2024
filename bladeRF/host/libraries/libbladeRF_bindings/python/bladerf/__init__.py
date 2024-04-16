@@ -47,6 +47,8 @@ RX = _bladerf.RX
 TX = _bladerf.TX
 CHANNEL_RX = _bladerf.CHANNEL_RX
 CHANNEL_TX = _bladerf.CHANNEL_TX
+TRIGGER_ROLE = _bladerf.TriggerRole
+TRIGGER_SIGNAL = _bladerf.TriggerSignal
 
 main = _tool.main
 

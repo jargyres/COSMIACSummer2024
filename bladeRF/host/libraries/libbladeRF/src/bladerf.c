@@ -930,6 +930,25 @@ int bladerf_set_correction(struct bladerf *dev,
 /* Trigger */
 /******************************************************************************/
 
+int bladerf_master_trigger_init(struct bladerf *dev,
+                                bladerf_channel ch,
+                                bladerf_trigger_signal signal,
+                                struct bladerf_trigger *trigger)
+{
+    int status;
+    MUTEX_LOCK(&dev->lock);
+
+    status = dev->board->trigger_init(dev, BLADERF_CHANNEL_TX(0), BLADERF_TRIGGER_J51_1, trigger);
+
+    trigger->role = BLADERF_TRIGGER_ROLE_MASTER;
+
+
+    MUTEX_UNLOCK(&dev->lock);
+    return status;
+}
+
+
+
 int bladerf_trigger_init(struct bladerf *dev,
                          bladerf_channel ch,
                          bladerf_trigger_signal signal,
@@ -987,6 +1006,8 @@ int bladerf_trigger_state(struct bladerf *dev,
 {
     int status;
     MUTEX_LOCK(&dev->lock);
+
+    printf("Trigger Channel = %d, role=%d ", trigger->channel, trigger->role);
 
     status = dev->board->trigger_state(dev, trigger, is_armed, has_fired,
                                        fire_requested, reserved1, reserved2);

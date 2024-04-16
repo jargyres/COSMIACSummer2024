@@ -240,6 +240,10 @@ header = """
     bladerf_trigger_signal signal;
     uint64_t options;
   };
+  int bladerf_master_trigger_init(struct bladerf *dev,
+                                bladerf_channel ch,
+                                bladerf_trigger_signal signal,
+                                struct bladerf_trigger *trigger);
   int bladerf_trigger_init(struct bladerf *dev, bladerf_channel ch,
     bladerf_trigger_signal signal, struct bladerf_trigger *trigger);
   int bladerf_trigger_arm(struct bladerf *dev, const struct

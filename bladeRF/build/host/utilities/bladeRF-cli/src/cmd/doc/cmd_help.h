@@ -27,7 +27,7 @@
  * Any manual modifications to this file will be overwritten!
  * To edit the content of help strings, please edit interactive-help.md
  *
- * Last generated: Wed Apr 10 04:11:30 PM MDT 2024 by jta@precision5520
+ * Last generated: Tue Apr 16 02:13:04 PM MDT 2024 by jta@precision5520
  */
 
 #ifndef BLADERF_CLI_DOC_CMD_HELP_H__

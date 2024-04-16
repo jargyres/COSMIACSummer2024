@@ -1720,6 +1720,12 @@ int CALL_CONV bladerf_trigger_fire(struct bladerf *dev,
 API_EXPORT
 int CALL_CONV printfromC();
 
+API_EXPORT
+int CALL_CONV bladerf_master_trigger_init(struct bladerf *dev,
+                                bladerf_channel ch,
+                                bladerf_trigger_signal signal,
+                                struct bladerf_trigger *trigger);
+
 
 
 API_EXPORT
