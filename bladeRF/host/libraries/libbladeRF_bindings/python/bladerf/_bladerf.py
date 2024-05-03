@@ -918,8 +918,15 @@ class BladeRF:
 
     def sync_config(self, layout, fmt, num_buffers, buffer_size, num_transfers,
                     stream_timeout):
+        # ret = libbladeRF.bladerf_sync_config(self.dev[0],
+        #                                      layout.value,
+        #                                      fmt.value,
+        #                                      num_buffers,
+        #                                      buffer_size,
+        #                                      num_transfers,
+        #                                      stream_timeout)
         ret = libbladeRF.bladerf_sync_config(self.dev[0],
-                                             layout.value,
+                                             layout,
                                              fmt.value,
                                              num_buffers,
                                              buffer_size,

@@ -21,7 +21,7 @@ OFFSET_CENTER_FREQ = CENTER_FREQ - FREQ_OFFSET
 #in Msps
 SAMPLE_RATE = int(40e6)
 #in dB
-GAIN_RX = 20
+GAIN_RX = 50
 #in Hz
 BANDWIDTH = int(40e6)
 
@@ -61,33 +61,52 @@ def bin2complex(binary_buffer, complex_array):
         complex_array[i//4] = complex(sig_i, sig_q)
 
 def MIMObin2complex(binary_buffer, complex_array):
+    index = 0
     for i in range(0, len(binary_buffer), 8):
         sig_i_0 = struct.unpack('<h', binary_buffer[i:i+2])[0]
         sig_q_0 = struct.unpack('<h', binary_buffer[i+2:i+4])[0]
+
         sig_i_1 = struct.unpack('<h', binary_buffer[i+4:i+6])[0]
         sig_q_1 = struct.unpack('<h', binary_buffer[i+6:i+8])[0]
 
-        complex_array[0][i//8] = complex(sig_i_0, sig_q_0)
-        complex_array[1][i//8] = complex(sig_i_1, sig_q_1)
+        # complex_array[0][i//8] = complex(sig_i_0, sig_q_0)
+        # complex_array[1][i//8] = complex(sig_i_1, sig_q_1)
+        complex_array[0][index] = complex(sig_i_0, sig_q_0)
+        complex_array[1][index] = complex(sig_i_1, sig_q_1)
+
+        index += 1
+
+
+
+
 
 def plotRXedData(mimo_buf, mimo_buf_dev2):
+
+    
+
     mimodata = np.zeros((2, NUM_SAMPLES), dtype=complex)
 
     MIMObin2complex(mimo_buf, mimodata)
 
     print(mimodata[0][:5])
     print(mimodata[1][:5])
+    # numsamples = NUM_SAMPLES//2
 
     data = mimodata[0].copy()
-    print("Master Channel 0 Power: {} db".format(Get_RX_Pwr(data)))
 
     f = np.linspace(-0.5 * SAMPLE_RATE, 0.5 * SAMPLE_RATE, len(data))
     f_carrier = np.linspace(-0.5 * SAMPLE_RATE, 0.5 * SAMPLE_RATE, len(data)) + OFFSET_CENTER_FREQ
-    data_fft = (20 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(data))) / NUM_SAMPLES)) - 20
+    data_fft = (20 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(data))) / len(data))) - 20
     carrier_data = [np.transpose(f_carrier), data_fft]
 
 
     fig, ax = plt.subplots(2, 2, figsize=(15,9.5))
+    fig2, ax2 = plt.subplots(2, 2, figsize=(15,9.5))
+
+    ax2[0][0].plot(np.linspace(0, 1, len(data)), np.real(data))
+    ax2[0][0].set_title("Time Series Master RX_0")
+    
+
 
     ax[0][0].plot(f_carrier, data_fft)
 
@@ -97,6 +116,7 @@ def plotRXedData(mimo_buf, mimo_buf_dev2):
 
     pwr, index = Get_RX_Pwr(data)
 
+
     ax[0][0].annotate("{} dB".format(pwr), xy=(f_carrier[index], pwr), xytext=(f_carrier[index], pwr),
                 arrowprops=dict(facecolor='black', shrink=0.5),
                 bbox=dict(boxstyle="round,pad=0.5", fc="r", alpha=0.5))
@@ -104,15 +124,17 @@ def plotRXedData(mimo_buf, mimo_buf_dev2):
     ax[0][0].grid()
 
 
+
     data = mimodata[1].copy()
-    print("Master Channel 1 Power: {} db".format(Get_RX_Pwr(data)))
 
 
     f = np.linspace(-0.5 * SAMPLE_RATE, 0.5 * SAMPLE_RATE, len(data))
     f_carrier = np.linspace(-0.5 * SAMPLE_RATE, 0.5 * SAMPLE_RATE, len(data)) + OFFSET_CENTER_FREQ
-    data_fft = (20 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(data))) / NUM_SAMPLES)) - 20
+    data_fft = (20 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(data))) / len(data))) - 20
     carrier_data = [np.transpose(f_carrier), data_fft]
 
+    ax2[0][1].plot(np.linspace(0, 1, len(data)), np.real(data))
+    ax2[0][1].set_title("Time Series Master RX_1")
 
     ax[0][1].plot(f_carrier, data_fft)
 
@@ -138,13 +160,14 @@ def plotRXedData(mimo_buf, mimo_buf_dev2):
     print(mimodata[1][:5])
 
     data = mimodata[0].copy()
-    print("Slave Channel 0 Power: {} db".format(Get_RX_Pwr(data)))
 
     f = np.linspace(-0.5 * SAMPLE_RATE, 0.5 * SAMPLE_RATE, len(data))
     f_carrier = np.linspace(-0.5 * SAMPLE_RATE, 0.5 * SAMPLE_RATE, len(data)) + OFFSET_CENTER_FREQ
-    data_fft = (20 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(data))) / NUM_SAMPLES)) - 20
+    data_fft = (20 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(data))) / len(data))) - 20
     carrier_data = [np.transpose(f_carrier), data_fft]
 
+    ax2[1][0].plot(np.linspace(0, 1, len(data)), np.real(data))
+    ax2[1][0].set_title("Time Series Slave RX_0")
 
 
     ax[1][0].plot(f_carrier, data_fft)
@@ -162,14 +185,15 @@ def plotRXedData(mimo_buf, mimo_buf_dev2):
     ax[1][0].grid()
 
     data = mimodata[1].copy()
-    print("Slave Channel 1 Power: {} db".format(Get_RX_Pwr(data)))
 
 
     f = np.linspace(-0.5 * SAMPLE_RATE, 0.5 * SAMPLE_RATE, len(data))
     f_carrier = np.linspace(-0.5 * SAMPLE_RATE, 0.5 * SAMPLE_RATE, len(data)) + OFFSET_CENTER_FREQ
-    data_fft = (20 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(data))) / NUM_SAMPLES)) - 20
+    data_fft = (20 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(data))) / len(data))) - 20
     carrier_data = [np.transpose(f_carrier), data_fft]
 
+    ax2[1][1].plot(np.linspace(0, 1, len(data)), np.real(data))
+    ax2[1][1].set_title("Time Series Slave RX_1")
 
     ax[1][1].plot(f_carrier, data_fft)
 
@@ -214,11 +238,14 @@ ch_tx_1 = bladerf.CHANNEL_TX(1)
 #set both rx to manual gain mode to simplify things
 # d.set_gain_mode(ch_rx_0, 1)
 # d.set_gain_mode(ch_rx_1, 1)
-master_bladerf.set_gain_mode(ch_rx_0, 0)
-master_bladerf.set_gain_mode(ch_rx_1, 0)
-slave_bladerf.set_gain_mode(ch_rx_0, 0)
-slave_bladerf.set_gain_mode(ch_rx_1, 0)
-
+# master_bladerf.set_gain_mode(ch_rx_0, 0)
+# master_bladerf.set_gain_mode(ch_rx_1, 0)
+# slave_bladerf.set_gain_mode(ch_rx_0, 0)
+# slave_bladerf.set_gain_mode(ch_rx_1, 0)
+master_bladerf.set_gain_mode(ch_rx_0, 1)
+master_bladerf.set_gain_mode(ch_rx_1, 1)
+slave_bladerf.set_gain_mode(ch_rx_0, 1)
+slave_bladerf.set_gain_mode(ch_rx_1, 1)
 
 #set the sample rate for the RX chain
 master_bladerf.set_sample_rate(ch_rx_0, SAMPLE_RATE)
@@ -232,7 +259,11 @@ master_bladerf.set_bandwidth(ch_rx_1, BANDWIDTH)
 slave_bladerf.set_bandwidth(ch_rx_0, BANDWIDTH)
 slave_bladerf.set_bandwidth(ch_rx_1, BANDWIDTH)
 
+
+
+
 #set the gain for the RX chain
+
 master_bladerf.set_gain(ch_rx_0, GAIN_RX)
 master_bladerf.set_gain(ch_rx_1, GAIN_RX)
 slave_bladerf.set_gain(ch_rx_0, GAIN_RX)
@@ -282,18 +313,39 @@ slave_bladerf.trigger_arm(slave_bladerfslaveTrigger_RX0, True)
 #                        num_transfers  = 8,
 #                        stream_timeout = 10000)
 
-master_bladerf.sync_config(layout = _bladerf.ChannelLayout.RX_X2,
+# master_bladerf.sync_config(layout = _bladerf.ChannelLayout.RX_X2,
+#                        fmt            = _bladerf.Format.SC16_Q11,
+#                        num_buffers    = 16,
+#                        buffer_size    = 2048,
+#                        num_transfers  = 8,
+#                        stream_timeout = 10000)
+# slave_bladerf.sync_config(layout = _bladerf.ChannelLayout.RX_X2,
+#                        fmt            = _bladerf.Format.SC16_Q11,
+#                        num_buffers    = 16,
+#                        buffer_size    = 2048,
+#                        num_transfers  = 8,
+#                        stream_timeout = 10000)
+
+bytes_per_sample = 4
+NUM_SAMPLES = 1024
+NUM_CHANNELS = 2
+bytesinint16 = 2
+buf_size = 2 * NUM_SAMPLES * NUM_CHANNELS * bytesinint16
+
+master_bladerf.sync_config(layout = 2,
                        fmt            = _bladerf.Format.SC16_Q11,
-                       num_buffers    = 16,
-                       buffer_size    = 2048,
+                       num_buffers    = 32,
+                       buffer_size    = buf_size,
                        num_transfers  = 8,
                        stream_timeout = 10000)
-slave_bladerf.sync_config(layout = _bladerf.ChannelLayout.RX_X2,
+slave_bladerf.sync_config(layout = 2,
                        fmt            = _bladerf.Format.SC16_Q11,
-                       num_buffers    = 16,
-                       buffer_size    = 2048,
+                       num_buffers    = 32,
+                       buffer_size    = buf_size,
                        num_transfers  = 8,
                        stream_timeout = 10000)
+
+print(master_bladerf.get_devinfo())
 
 master_s_0 = master_bladerf.Channel(bladerf.CHANNEL_RX(0))
 master_s_0.enable = True
@@ -305,12 +357,12 @@ slave_s_1 = slave_bladerf.Channel(bladerf.CHANNEL_RX(1))
 slave_s_1.enable = True
 
 
-bytes_per_sample = 4
-NUM_SAMPLES = 1024
 
+
+# mimo_buf = bytearray(NUM_SAMPLES*bytes_per_sample * 2)
+# mimo_buf_dev2 = bytearray(NUM_SAMPLES*bytes_per_sample * 2)
 mimo_buf = bytearray(NUM_SAMPLES*bytes_per_sample * 2)
 mimo_buf_dev2 = bytearray(NUM_SAMPLES*bytes_per_sample * 2)
-
 
 # print(master_bladerf.get_gain(ch_rx_0))
 # print(master_bladerf.get_gain(ch_rx_1))
@@ -321,8 +373,8 @@ mimo_buf_dev2 = bytearray(NUM_SAMPLES*bytes_per_sample * 2)
 rxpool = ThreadPool(processes=1)
 rxpool_dev2 = ThreadPool(processes=1)
 
-result = rxpool.apply_async(master_bladerf.sync_rx, (mimo_buf, NUM_SAMPLES))
-result_dev2 = rxpool.apply_async(slave_bladerf.sync_rx, (mimo_buf_dev2, NUM_SAMPLES))
+result = rxpool.apply_async(master_bladerf.sync_rx, (mimo_buf, NUM_SAMPLES*2))
+result_dev2 = rxpool.apply_async(slave_bladerf.sync_rx, (mimo_buf_dev2, NUM_SAMPLES*2))
 
 
 print("Firing Master Trigger")
@@ -330,6 +382,8 @@ master_bladerf.trigger_fire(masterTrigger)
 
 result.wait()
 result_dev2.wait()
+
+
 
 # Disable module
 print( "RX: Stop" )

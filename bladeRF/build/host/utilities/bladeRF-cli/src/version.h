@@ -1,7 +1,7 @@
 #ifndef BLADERF_CLI_VERSION_H__
 #define BLADERF_CLI_VERSION_H__
 
-#define BLADERF_CLI_VERSION       "1.9.0-git-4dd52fd-dirty"
+#define BLADERF_CLI_VERSION       "1.9.0-git-83122ee-dirty"
 
 #define BLADERF_CLI_VERSION_MAJOR 1
 #define BLADERF_CLI_VERSION_MINOR 9
