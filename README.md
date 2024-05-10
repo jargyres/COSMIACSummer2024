@@ -140,3 +140,7 @@ Q format is not standard in C/C++ or numpy, as such we define it ourselves as "d
 Another problem occurs with this format. We cannot do default mathematical operations on a custom defined data type. As such, we convert our data once more: take the proper data, view all 16-bit integers as a single 32-bit floating point number, and view all of those 32-bit floating point numbers as a typical 64-bit complex number. Doing this allows us to perform typical operations expected of complex-valued data and maintain the integrity of the true data.
 
 
+## Sync Multiple BladeRFs
+In order to synchronize multiple BladeRF devices, there are a couple physical connections to make on the devices.
+
+### The 
