@@ -11,8 +11,10 @@ from multiprocessing.pool import ThreadPool
 
 
 #in Hz
-CENTER_FREQ = int(3e9)
-# CENTER_FREQ = int(2.350e9)
+# CENTER_FREQ = int(3e9)
+# CENTER_FREQ = int(3e9)
+
+CENTER_FREQ = int(2.350e9)
 
 #in Hz, need this due to DC offset generated at the center frequency
 FREQ_OFFSET = int(5e6)
