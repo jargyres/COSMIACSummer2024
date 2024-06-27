@@ -918,20 +918,20 @@ class BladeRF:
 
     def sync_config(self, layout, fmt, num_buffers, buffer_size, num_transfers,
                     stream_timeout):
-        # ret = libbladeRF.bladerf_sync_config(self.dev[0],
-        #                                      layout.value,
-        #                                      fmt.value,
-        #                                      num_buffers,
-        #                                      buffer_size,
-        #                                      num_transfers,
-        #                                      stream_timeout)
         ret = libbladeRF.bladerf_sync_config(self.dev[0],
-                                             layout,
+                                             layout.value,
                                              fmt.value,
                                              num_buffers,
                                              buffer_size,
                                              num_transfers,
                                              stream_timeout)
+        # ret = libbladeRF.bladerf_sync_config(self.dev[0],
+        #                                      layout,
+        #                                      fmt.value,
+        #                                      num_buffers,
+        #                                      buffer_size,
+        #                                      num_transfers,
+        #                                      stream_timeout)
         _check_error(ret)
 
     def sync_tx(self, buf, num_samples, timeout_ms=None, meta=ffi.NULL):
@@ -940,7 +940,7 @@ class BladeRF:
                                          num_samples,
                                          ffi.cast("struct bladerf_metadata *", meta),
                                          timeout_ms or 0)
-        _check_error(ret)
+        # _check_error(ret)
 
     def sync_rx(self, buf, num_samples, timeout_ms=None, meta=ffi.NULL):
         ret = libbladeRF.bladerf_sync_rx(self.dev[0],
@@ -948,7 +948,7 @@ class BladeRF:
                                          num_samples,
                                          meta,
                                          timeout_ms or 0)
-        _check_error(ret)
+        # _check_error(ret)
 
     # FPGA/Firmware Loading/Flashing
 

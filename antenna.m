@@ -4,28 +4,51 @@
 
 %% Antenna Properties 
 
-antennaObject = design(reflector('Exciter', patchMicrostrip), 1575*1e6);
+% antennaObject = design(reflector('Exciter', patchMicrostrip), 1575*1e6);
+
+
+
+
+p = patchMicrostripCircular;
+d = dielectric;
+d.EpsilonR = 4.4;
+p.Radius = 0.0256;
+p.Height = 1.6e-3;
+p.Substrate = d;
+p.GroundPlaneLength = 3*0.0256;
+p.GroundPlaneWidth = 3*0.0256;
+p.FeedOffset = [0.0116 0];
+
+
+
+pb = pcbStack(p);
+pb.FeedDiameter = 1.27e-3;
+pb.ViaLocations = [0 pb.FeedLocations(1)/1.1 1 3];
+pb.ViaDiameter = pb.FeedDiameter;
+figure
+show(pb)
+
 % Show
-figure;
-show(antennaObject) 
+% figure;
+% show(antennaObject) 
 
 %% Antenna Analysis 
 % Define plot frequency 
-plotFrequency = 1575*1e6;
+% plotFrequency = 1575*1e6;
 % Define frequency range 
-freqRange = (1417.5:15.75:1732.5)*1e6;
+% freqRange = (1417.5:15.75:1732.5)*1e6;
 % Reference Impedance 
-refImpedance = 50;
+% refImpedance = 50;
 % impedance
-figure;
-impedance(antennaObject, freqRange)
+% figure;
+% impedance(antennaObject, freqRange)
 % sparameter
-figure;
-s = sparameters(antennaObject, freqRange, refImpedance); 
-rfplot(s)
+% figure;
+% s = sparameters(antennaObject, freqRange, refImpedance); 
+% rfplot(s)
 % pattern
-figure;
-pattern(antennaObject, plotFrequency)
+% figure;
+% pattern(antennaObject, plotFrequency)
 % azimuth
 % figure;
 % patternAzimuth(antennaObject, plotFrequency, 0, 'Azimuth', 0:5:360)
@@ -35,4 +58,7 @@ pattern(antennaObject, plotFrequency)
 % figure;
 % patternElevation(antennaObject, plotFrequency,0,'Elevation',0:5:360)
 
-ar = axialRatio(antennaObject,plotFrequency,0,0);
+% ar = axialRatio(antennaObject,plotFrequency,0,0);
+
+
+ % gerberWrite(pcb, 'FileName', 'spiralArchimedean');

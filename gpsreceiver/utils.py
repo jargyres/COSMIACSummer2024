@@ -2,9 +2,18 @@ import numpy as np
 from numpy import r_
 from numpy import pi
 import matplotlib.pyplot as plt
+from numpy.lib.stride_tricks import sliding_window_view
+import scipy
+import scipy.signal
+np.set_printoptions(threshold=np.inf)
 class Utils:
     def __init__(self):
         self.name = "John"
+        self.createSignal()
+        
+
+        
+        # self.beginningSequence = np.aarr
 
     def gen_ca_codes(self, id):
         code = ""
@@ -106,67 +115,374 @@ class Utils:
             return amplitude*(np.cos(np.deg2rad(180) + phaseOffset)) + (noise1 + 1j*noise2)
         else:
             return complex(0)
+        
+    def getPhase(self, symbol):
+        if(symbol == 0):
+            # return np.deg2rad(-180)
+            return -1
+        else:
+            # return np.deg2rad(180)
+            return 1
+        
+    def gen_bpsk_carrier_signal(self, sample_rate, carrier_frequency, n):
 
-    def gen_BPSK_signal(self, data, symbol_rate, sample_rate, carrier_frequency):
-        # samples_per_symbol = int(sample_rate/symbol_rate)
-        samples_per_symbol = 64
+        N = n
 
-        total_num_samples = len(data) * samples_per_symbol
+        # fs = int(sample_rate)
+
+        # fc = int(carrier_frequency)
+
+        # ts = 1 / float(fs)
+
+        # t = np.arange(0, N * ts, ts)
+
+        # i = np.cos(2 * np.pi * t * fc) * 2 ** 14
+
+        # # q = np.sin(2 * np.pi * t * fc) * 2 ** 14
+        # q = np.zeros(N)
+
+        # self.bpsk_carrier_signal = i + 1j * q
 
 
-        # time_points = (r_[0.0:total_num_samples])/sample_rate
-        time_points = np.arange(total_num_samples) / sample_rate
+        i = np.zeros(N)
+        q = np.zeros(N)
+        for k in range(N):
+            i[k] = np.round(2048.0 * np.cos(2.0 * k * np.pi / N))
+            # q[k] = np.round(2048.0 * np.sin(2.0 * k * np.pi / N))
+            # i[k] = 2048
+            
+            if(i[k] > 2047):
+                i[k] = 2047
+            if(i[k] < -2048):
+                i[k] = -2048
+            # if(q[k] > 2047):
+            #     q[k] = 2047
+            # if(q[k] < -2048):
+            #     q[k] = -2048          
 
-        frequency_points = r_[0:total_num_samples/2.0]/total_num_samples*sample_rate
+        self.bpsk_carrier_signal = i + 1j * q
 
-        carrier_signal = np.cos(2*pi*carrier_frequency*time_points)
-        # carrier_signal = np.zeros(1024)
-        # for i in range(1024):
-        #     carrier_signal[i] = np.sin(2 * np.pi * carrier_frequency * time_points[i])
-        print(np.shape(carrier_signal))
-        plt.plot(carrier_signal)
-        # plt.xlim(0, 100)
+    def bpsk_modulate(self, data):
+        samples_per_symbol = 256
+
+
+        phase_sequence = np.array([2*x - 1 for x in data])
+
+        # Generate the continuous phase signal with the desired samples per symbol
+        phase_signal = np.repeat(phase_sequence, samples_per_symbol)
+
+        plt.plot(phase_signal)
         plt.show()
-
-        input_data_signal = (np.tile(data*2-1, (1,samples_per_symbol))).ravel()
-
-
-        dataSymbols = np.array([[self.GetBpskSymbol(data[x])] for x in range(0,data.size)])
+        
+        BPSK_signal = phase_signal * self.bpsk_carrier_signal[:len(phase_signal)]
 
 
-        noiseStandardDeviation = 0.12
-        noise1 = np.random.normal(0,noiseStandardDeviation,dataSymbols.size) 
-        noise2 = np.random.normal(0,noiseStandardDeviation,dataSymbols.size) 
+        # n = (np.random.randn(len(BPSK_signal)) + 1j*np.random.randn(len(BPSK_signal)))/np.sqrt(2) # AWGN with unity power
+        # noise_power = 300
+        # # print((n.real * np.sqrt(noise_power))[:100])
+        # # # np.sqrt(noise_power)
+        # BPSK_signal.real += (n.real * noise_power)
 
-        amplitude = 1
+        # rollamount = np.random.randint(0, 256)
+        # BPSK_signal = np.roll(BPSK_signal, rollamount)
+        # BPSK_signal = BPSK_signal[:-rollamount]
+        # BPSK_signal = np.append(BPSK_signal, np.zeros(rollamount))
 
-        # Tx_symbols = np.array([[self.BpskSymbolMapper(dataSymbols[x],
-        #                         amplitude,
-        #                         phaseOffset = np.deg2rad(0)
-        #                         )] for x in range(0,dataSymbols.size)])
-        BPSK_signal = input_data_signal * carrier_signal
-        # plt.plot(Tx_symbols.imag)
-        # plt.show()
-        # Limit for representation of time domain signals for better visibility. 
-        symbolsToShow = 60
-        timeDomainVisibleLimit = np.minimum(total_num_samples/symbol_rate,symbolsToShow/symbol_rate)  
+        return BPSK_signal
+    
 
-        plt.plot(time_points,BPSK_signal, color='C3')
-        plt.title('BPSK Modulated Signal (Source Code/ Block Diagram: "BPSK_signal")')
-        plt.xlabel('Time [s]')
-        # plt.xlim(0,timeDomainVisibleLimit)
-        plt.ylabel('Amplitude [V]')
-        plt.grid(linestyle='dotted')
-        plt.show()
-                
+    def bpsk_demodulate(self, buf, freq, samplerate):
+        samples_per_symbol = 256
 
-u = Utils()
-input_arr = np.random.randint(2, size=16)
-print(input_arr)
-# u.gen_BPSK_signal(input_arr, 10, int(40e6), int(1.57e9))
-# u.gen_BPSK_signal(input_arr, 750000, int(48e6), int(1.57e9))
-u.gen_BPSK_signal(input_arr, 750000, int(48e6)*2, int(1e6))
+        #find the phase difference between the received BPSK signal and the original carrier signal
+        phase_shift_rad = self.phase_shift(self.bpsk_carrier_signal[:len(buf)].real, buf.real)
+        offset = self.carrier_phase_offset_index(phase_shift_rad, freq, (1/float(samplerate)))
 
-# u.gen_BPSK_signal(input_arr, 750000, int(48e9), int(1.57e9))
+        #multiply the BPSK signal by the (estimated) original carrier signal
+        #multiplying two signals of the same frequency but different phase gives us a signal
+        #which is double the frequency plus an offset which depends on the difference between the two phases
+        #so what we get out of this operation is a signal at twice the frequency whose amplitude is above zero for
+        #samples which designate a "1" and whose amplitude is below zero for samples which designate a "0"
+        other_signal = buf * self.bpsk_carrier_signal[offset:len(buf)+offset]
+
+        #if the first round of samples is not 1's, then flip the whole signal
+        if(np.sum(other_signal[samples_per_symbol:samples_per_symbol*5]) < 0):
+            other_signal *= -1
+
+        #integrate and sum over the samples_per_window chunks of data
+        x_hat = sliding_window_view(other_signal[256:], window_shape=samples_per_symbol)
+
+        #add up every window
+        x = np.sum(x_hat, axis=1)
+
+        #skip to the windows that designate our data, not windows which are in between two bits
+        symbols = x[::samples_per_symbol]
+
+        bits = ~(symbols < 0)
+        
+        realbits = bits.astype(int)
+
+        #skip over our preamble
+        i = 2
+        while(i < len(realbits) and realbits[i] == 1):
+            i+=1
+        realbits = realbits[i+1:]
+
+        if(len(realbits) > 8):
+            return np.array([0,0,0,0,0,0,0,0])
 
 
+        return realbits
+    
+    def phase_shift(self, carr_wave, rec_wave):
+        try:              
+            assert len(carr_wave)==len(rec_wave)
+
+            carr_comp = scipy.signal.hilbert(carr_wave)
+
+            rec_comp = scipy.signal.hilbert(rec_wave)
+        except:
+            return 0
+        # carr_comp = carr_wave
+        # rec_comp = rec_wave
+        c = np.inner( carr_comp, np.conjugate(rec_comp) ) / np.sqrt( np.inner(carr_comp,np.conjugate(carr_comp)) * np.inner(rec_comp,np.conjugate(rec_comp)) )
+        phase_diff = np.angle(c)
+        phase_diff = abs(phase_diff)
+        return phase_diff
+
+
+    def createSignal(self):
+
+        """
+        Creates an array of size 1024 of our iq data\n
+        """
+        i = np.zeros(1024)
+        q = np.zeros(1024)
+        for k in range(1024):
+            i[k] = np.round(2048.0 * np.cos(2.0 * k * np.pi / 1024))
+            q[k] = np.round(2048.0 * np.sin(2.0 * k * np.pi / 1024))
+            if(i[k] > 2047):
+                i[k] = 2047
+            if(i[k] < -2048):
+                i[k] = -2048
+            if(q[k] > 2047):
+                q[k] = 2047
+            if(i[k] < -2048):
+                q[k] = -2048          
+
+        self.carrier_signal = i + 1j * q
+
+    def carrier_phase_offset_index(self, rad, fc, ts):
+        val = rad / (2 * np.pi * fc) / ts
+        return int(np.round(val))
+
+    def am_modulation(self, data):
+
+        samples_per_symbol = 128
+
+        # phase_sequence = np.array([(x+1) for x in data])
+
+        phase_sequence = np.repeat(data, samples_per_symbol)
+        i = np.zeros(1024)
+        q = np.zeros(1024)
+        for k in range(1024):
+            i[k] = np.round(2048.0 * phase_sequence[k] * np.cos(2.0 * k * np.pi / 1024))
+            q[k] = np.round(2048.0 * phase_sequence[k] *np.sin(2.0 * k * np.pi / 1024))
+            if(i[k] > 2047):
+                i[k] = 2047
+            if(i[k] < -2048):
+                i[k] = -2048
+            if(q[k] > 2047):
+                q[k] = 2047
+            if(i[k] < -2048):
+                q[k] = -2048          
+
+        phase_sequence = i + 1j * q
+        # return phase_sequence * self.carrier_signal
+        # print(np.shape(phase_sequence))
+        return phase_sequence
+        
+
+
+    def indices(self, a, func):
+        return [i for (i, val) in enumerate(a) if func(val)]
+
+
+    def plotRXedData(self, data, SAMPLE_RATE, CENTER_FREQ):
+
+
+        # f = np.linspace(-0.5 * SAMPLE_RATE, 0.5 * SAMPLE_RATE, len(data))
+        f_carrier = np.linspace(-0.5 * SAMPLE_RATE, 0.5 * SAMPLE_RATE, len(data)) + CENTER_FREQ
+        #20 * log base 10 will give us the fft scaled to dB values
+        data_fft = (20 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(data))) / len(data)))
+        carrier_data = [np.transpose(f_carrier), data_fft]
+        carrier_data = np.asanyarray(carrier_data)
+
+
+        # indexes = self.indices(carrier_data[0], lambda x: x > CENTER_FREQ - 1e6 and x < CENTER_FREQ + 1e6)
+
+        # pwr=max(data_fft[indexes])
+
+        # index = np.where(data_fft == pwr)[0][0]
+
+        fig, ax = plt.subplots(2, 1, figsize=(15,9.5))
+
+
+
+        ax[0].plot(np.linspace(0, 1, len(data)), np.real(data))
+        ax[0].set_title("Time Domain RX0")
+        
+
+
+        ax[1].plot(f_carrier, data_fft)
+
+        ax[1].set_ylabel("Power (dB)")
+
+        ax[1].set_xlabel("Frequency (Hz)")
+
+
+        ax[1].set_title("Frequency Domain RX0")
+
+        # ax[1].annotate("{} dB".format(pwr), xy=(f_carrier[index], pwr), xytext=(f_carrier[index], pwr),
+        #             arrowprops=dict(facecolor='black', shrink=0.5),
+        #             bbox=dict(boxstyle="round,pad=0.5", fc="r", alpha=0.5))
+
+        ax[1].grid()
+
+        plt.show(block=False)
+
+        fig = plt.figure()
+        plt.scatter(np.real(data), np.imag(data))
+        plt.title("IQ Data RX0")
+        plt.ylabel("Imag")
+        plt.xlabel("Real")
+
+        plt.show()               
+
+# u = Utils()
+
+# input_arr = np.random.randint(2, size=8)
+
+# print(input_arr)
+# input_arr = np.array([0,0,0,0,1,1,0,0])
+
+# buf = u.bpsk_modulate(input_arr, int(40e6), int(20e5))
+
+# plt.plot(buf)
+
+# plt.show()
+
+# while(True):
+#     buf = u.bpsk_modulate(input_arr, int(40e6), int(20e5))
+
+#     u.bpsk_demodulate(buf)
+
+#     plt.plot(buf)
+
+#     plt.show()
+
+
+# buf = u.am_modulation(input_arr)
+
+# print(np.shape(buf))
+
+# N = 1024
+
+# fs = int(20e6)
+
+# fc = int(2.4e5)
+
+# ts = 1 / float(fs)
+
+# t = np.arange(0, N * ts, ts)
+
+# i = np.cos(2 * np.pi * t * fc) * 2 ** 14
+
+# q = np.sin(2 * np.pi * t * fc) * 2 ** 14
+
+# carrier_signal = i + 1j * q
+
+# # print(carrier_signal)
+# carrier_signal *= buf
+
+# plt.plot(carrier_signal)
+# plt.show()
+
+# buf = u.bpsk_modulate(input_arr, int(40e6), int(5e6))
+
+# plt.plot(buf)
+# plt.show()
+
+# u.bpsk_demodulate(buf)
+
+
+# u.createSignal(int(40e6), int(2.4e9))
+# utils = Utils()
+# samplerate = int(40e6)
+# freq = int(20e5)
+
+# start_binary = np.array([1,1,1,1,1,1,1,0])
+# real_data = np.random.randint(2, size=8)
+# binary_data = np.append(start_binary,real_data)
+
+
+# print(binary_data)
+# def percent_error(real, received):
+#     total_wrong = 0
+#     if(len(real) != len(received)):
+#         return 1.0
+#     for i in range(8):
+#         if(real[i] != received[i]):
+#             total_wrong += 1
+    
+#     return ( total_wrong / 8 ) * 100
+
+# utils.gen_bpsk_carrier_signal(samplerate, freq)
+# buf = utils.bpsk_modulate(binary_data)
+# print(buf)
+# plt.plot(buf[:2048])
+# plt.show()
+# import time
+# np.set_printoptions(precision=10)
+# for i in range(10000):
+#     real_data = np.random.randint(2, size=8)
+    # binary_data = np.append(start_binary,real_data)
+#     buf = utils.bpsk_modulate(binary_data)
+#     averagetime = np.zeros(100)
+#     t_index = 0
+#     if(len(buf) != 0):
+#         start = time.time()
+#         rxed_data = utils.bpsk_demodulate(buf, freq, samplerate)
+#         end = time.time()
+#         t = (end - start)
+#         averagetime[t_index] = t
+#         t += 1
+#         t %= 100
+#         avg = np.mean(averagetime)
+#         # print("average time = {0:0.10f}".format(avg), end='\r')
+#         print("Error {}\n{}\n{}\n".format(percent_error(real_data, rxed_data), real_data, rxed_data))
+
+# data = "Hello world"
+
+
+
+
+# data = input()
+# data_bytes = bytes(data, 'utf-8')
+# bytes_array = []
+# for b in data_bytes:
+#     bytes_array.append([int(i) for i in list('{0:08b}'.format(b))])
+
+# received_array = []
+
+
+# for arr in bytes_array:
+#     binary_data = np.append(start_binary,arr)
+#     buf = utils.bpsk_modulate(binary_data)
+#     rxed_data = utils.bpsk_demodulate(buf, freq, samplerate)
+#     received_array.append(rxed_data)
+
+# final_data = [chr(int(''.join(str(c) for c in b),2)) for b in bytes_array]
+
+
+# print(final_data)

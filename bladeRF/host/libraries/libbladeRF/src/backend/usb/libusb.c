@@ -1060,7 +1060,7 @@ static void LIBUSB_CALL lusb_stream_cb(struct libusb_transfer *transfer)
     /* Check to see if the transfer has been cancelled or errored */
     if (transfer->status != LIBUSB_TRANSFER_COMPLETED) {
         /* Errored out for some reason .. */
-        stream->state = STREAM_SHUTTING_DOWN;
+        // stream->state = STREAM_SHUTTING_DOWN;
 
         switch (transfer->status) {
             case LIBUSB_TRANSFER_CANCELLED:

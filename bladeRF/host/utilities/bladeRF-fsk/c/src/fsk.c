@@ -91,6 +91,7 @@ static struct complex_sample *fsk_gen_samples_table(int points_per_rev)
         //Calculate cosine/sine samples. Round to nearest integer.
         sample_table[i].i = (int16_t) round(2048.0*cos(i * 2.0 * M_PI / points_per_rev));
         sample_table[i].q = (int16_t) round(2048.0*sin(i * 2.0 * M_PI / points_per_rev));
+        printf("Sample[%d].i=%d Sample[%d].q=%d\n", i,(int) round(2048.0*cos(i * 2.0 * M_PI / points_per_rev)),i, (int) round(2048.0*sin(i * 2.0 * M_PI / points_per_rev)));
         //Clamp values to [-2048, 2047]
         if (sample_table[i].i > 2047){
             sample_table[i].i = 2047;
