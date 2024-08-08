@@ -1,0 +1,13 @@
+/usr/local/lib/pkgconfig/libbladeRF.pc
+/usr/local/lib/libbladeRF.so.2
+/usr/local/lib/libbladeRF.so
+/usr/local/share/cmake/bladeRF/bladeRFConfig.cmake
+/usr/local/share/cmake/bladeRF/bladeRFConfigVersion.cmake
+/usr/local/include/libbladeRF.h
+/usr/local/include/bladeRF1.h
+/usr/local/include/bladeRF2.h
+/etc/udev/rules.d/88-nuand-bladerf1.rules
+/etc/udev/rules.d/88-nuand-bladerf2.rules
+/etc/udev/rules.d/88-nuand-bootloader.rules
+/usr/local/bin/bladeRF-cli
+/usr/local/bin/bladeRF-fsk

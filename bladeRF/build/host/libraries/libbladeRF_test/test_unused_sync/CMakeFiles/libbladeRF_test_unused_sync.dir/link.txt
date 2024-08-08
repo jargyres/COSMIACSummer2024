@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG CMakeFiles/libbladeRF_test_unused_sync.dir/main.c.o -o ../../../output/libbladeRF_test_unused_sync  -Wl,-rpath,/home/jta/bladerf_testing/bladeRF/build/host/output ../../../output/libbladeRF.so.2 ../../../output/libad936x.a /usr/lib/x86_64-linux-gnu/libusb-1.0.so 

@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  "../../../output/libbladeRF_test_timestamps"
+  "../../../output/libbladeRF_test_timestamps.pdb"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/__/__/__/common/src/conversions.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/__/__/__/common/src/conversions.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/__/common/src/test_common.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/__/common/src/test_common.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/loopback.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/loopback.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/main.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/main.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_format_mismatch.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_format_mismatch.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_loopback_onoff.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_loopback_onoff.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_loopback_onoff_rf.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_loopback_onoff_rf.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_loopback_onoff_zp.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_loopback_onoff_zp.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_print_timestamps.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_print_timestamps.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_readback.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_readback.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_rx_gaps.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_rx_gaps.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_rx_scheduled.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_rx_scheduled.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_timestamps.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_timestamps.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_tx_gmsk_bursts.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_tx_gmsk_bursts.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_tx_onoff.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_tx_onoff.c.o.d"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_tx_onoff_nowsched.c.o"
+  "CMakeFiles/libbladeRF_test_timestamps.dir/src/test_tx_onoff_nowsched.c.o.d"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang C)
+  include(CMakeFiles/libbladeRF_test_timestamps.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
