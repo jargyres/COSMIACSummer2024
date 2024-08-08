@@ -99,7 +99,7 @@ class AntennaArray:
     '''
     def total_doa_response(self, tx: npt.NDArray[np.complex128], plot: bool):
 
-        theta_scan = np.linspace(-1*np.pi, np.pi, 1000) # 1000 different thetas between -180 and +180 degrees
+        theta_scan = np.linspace(-1*np.pi/2, np.pi/2, 1000) # 1000 different thetas between -180 and +180 degrees
         results = []
         for theta_i in theta_scan:
             
@@ -136,7 +136,7 @@ class AntennaArray:
     '''
     def total_doa_response_custom_weights(self, tx: npt.NDArray[np.complex128], plot: bool, weight_function):
 
-        theta_scan = np.linspace(-1*np.pi, np.pi, 1000) # 1000 different thetas between -180 and +180 degrees
+        theta_scan = np.linspace(-1*np.pi/2, np.pi/2, 1000) # 1000 different thetas between -180 and +180 degrees
 
         results = []
 
@@ -154,7 +154,7 @@ class AntennaArray:
             return theta_scan, results
         else:
             # print angle that gave us the max value
-            print(theta_scan[np.argmax(results)] * 180 / np.pi)
+            print("Angle of max pwr: {}".format(theta_scan[np.argmax(results)] * 180 / np.pi))
 
             fig, (ax1) = plt.subplots(1, 1, figsize=(7, 3))
             ax1.plot(theta_scan*180/np.pi, results) # lets plot angle in degrees
@@ -167,6 +167,8 @@ class AntennaArray:
 
             fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
             ax.plot(theta_scan, results) # MAKE SURE TO USE RADIAN FOR POLAR
+            ax.set_thetamin(90)
+            ax.set_thetamax(-90)
             ax.set_theta_zero_location('N') # make 0 degrees point up
             ax.set_theta_direction(-1) # increase clockwise
             ax.set_rlabel_position(55)  # Move grid labels away from other labels

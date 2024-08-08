@@ -16,6 +16,7 @@ class MVDR_Beamformer:
         w = (Rinv @ s)/(s.conj().T @ Rinv @ s) # MVDR/Capon equation! numerator is 3x3 * 3x1, denominator is 1x3 * 3x3 * 3x1, resulting in a 3x1 weights vector
         return w
     
+    #simplification if we just want the total signal power of X at angle theta and not the weights
     def power_mvdr(self, theta, X):
         s = np.exp(-2j * np.pi * self.array.wavelength_spacing * np.arange(self.array.num_elements) * np.sin(theta)) # steering vector in the desired direction theta
         s = s.reshape(-1,1) # make into a column vector (size 3x1)

@@ -27,4 +27,3 @@ X = ula.simulate_multiple_tx(num_samples=N,
 
 ula.total_doa_response_custom_weights(X, True, mvdr.w_mvdr)
 
-#test
