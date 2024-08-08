@@ -7,8 +7,6 @@ ula = AntennaArray(4, 0.5)
 
 mvdr = MVDR_Beamformer(array=ula)
 
-
-
 sample_rate = 1e6
 f_carrier = 0.02e6
 N = 1024 # number of samples to simulate

@@ -17,7 +17,7 @@ class MVDR_Beamformer:
         return w
     
     #simplification if we just want the total signal power of X at angle theta and not the weights
-    def power_mvdr(self, theta, X):
+    def power_mvdr(self, X, theta):
         s = np.exp(-2j * np.pi * self.array.wavelength_spacing * np.arange(self.array.num_elements) * np.sin(theta)) # steering vector in the desired direction theta
         s = s.reshape(-1,1) # make into a column vector (size 3x1)
         R = (X @ X.conj().T)/X.shape[1] # Calc covariance matrix. gives a Nr x Nr covariance matrix of the samples
